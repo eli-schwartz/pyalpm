@@ -25,6 +25,7 @@
 
 #include <Python.h>
 
+PyObject *pyalpm_db_from_pmdb2(void* data, PyObject *handle);
 PyObject *pyalpm_db_from_pmdb(void* data);
 int pylist_db_to_alpmlist(PyObject *list, alpm_list_t **result);
 

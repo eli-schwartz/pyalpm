@@ -30,6 +30,7 @@
 typedef struct _AlpmDB {
   PyObject_HEAD
   alpm_db_t *c_data;
+  PyObject *handle;
 } AlpmDB;
 
 #define ALPM_DB(self) (((AlpmDB*)self)->c_data)
@@ -37,7 +38,10 @@ typedef struct _AlpmDB {
 static PyTypeObject AlpmDBType;
 
 static void pyalpm_db_dealloc(AlpmDB *self) {
+  printf("hello world\n");
   Py_TYPE(self)->tp_free((PyObject*)self);
+  if (self->handle)
+    Py_DECREF(self->handle);
 }
 
 static PyObject* _pyobject_from_pmgrp(void *group) {
@@ -264,6 +268,21 @@ void init_pyalpm_db(PyObject *module) {
   PyModule_AddIntConstant(module, "SIG_DATABASE_UNKNOWN_OK", ALPM_SIG_DATABASE_UNKNOWN_OK);
 }
 
+
+PyObject *pyalpm_db_from_pmdb2(void* data, PyObject *handle) {
+  alpm_db_t *db = (alpm_db_t*)data;
+  AlpmDB *self;
+  self = (AlpmDB*)AlpmDBType.tp_alloc(&AlpmDBType, 0);
+  if (self == NULL) {
+    PyErr_SetString(PyExc_RuntimeError, "unable to create DB object");
+    return NULL;
+  }
+
+  Py_INCREF(handle);
+  self->handle = handle;
+  self->c_data = db;
+  return (PyObject *)self;
+}
 
 PyObject *pyalpm_db_from_pmdb(void* data) {
   alpm_db_t *db = (alpm_db_t*)data;

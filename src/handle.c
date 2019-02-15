@@ -69,7 +69,7 @@ PyObject* pyalpm_initialize(PyTypeObject *subtype, PyObject *args, PyObject *kwa
 
 static PyObject* pyalpm_get_localdb(PyObject *self, PyObject *dummy) {
   alpm_handle_t *handle = ALPM_HANDLE(self);
-  return pyalpm_db_from_pmdb(alpm_get_localdb(handle));
+  return pyalpm_db_from_pmdb2(alpm_get_localdb(handle), self);
 }
 
 static PyObject* pyalpm_get_syncdbs(PyObject *self, PyObject *dummy) {
@@ -363,6 +363,7 @@ static PyMethodDef pyalpm_handle_methods[] = {
 };
 
 static void pyalpm_dealloc(PyObject* self) {
+  printf("release handle\n");
   alpm_handle_t *handle = ALPM_HANDLE(self);
   int ret = alpm_release(handle);
   if (ret == -1) {
