@@ -28,6 +28,7 @@
 typedef struct _AlpmPackage {
   PyObject_HEAD
   alpm_pkg_t *c_data;
+  PyObject *db;
   int needs_free;
 } AlpmPackage;
 
@@ -39,6 +40,7 @@ int PyAlpmPkg_Check(PyObject *object);
 void pyalpm_pkg_unref(PyObject *object);
 
 PyObject *pyalpm_package_from_pmpkg(void* data);
+PyObject *pyalpm_package_from_pmpkg2(void* data, PyObject* db);
 alpm_pkg_t *pmpkg_from_pyalpm_pkg(PyObject *object);
 
 int pylist_pkg_to_alpmlist(PyObject *list, alpm_list_t **result);

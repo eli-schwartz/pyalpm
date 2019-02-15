@@ -153,7 +153,7 @@ static PyObject* pyalpm_db_get_pkg(PyObject *rawself, PyObject* args) {
     Py_RETURN_NONE;
   } else {
     PyObject *result;
-    result = pyalpm_package_from_pmpkg(p);
+    result = pyalpm_package_from_pmpkg2(p, rawself);
     if (result == NULL) {
       return NULL;
     } else {

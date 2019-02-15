@@ -87,6 +87,23 @@ PyObject *pyalpm_package_from_pmpkg(void* data) {
   return (PyObject *)self;
 }
 
+PyObject *pyalpm_package_from_pmpkg2(void* data, PyObject *db) {
+  AlpmPackage *self;
+  alpm_pkg_t *p = (alpm_pkg_t*)data;
+  self = (AlpmPackage*)AlpmPackageType.tp_alloc(&AlpmPackageType, 0);
+  if (self == NULL) {
+    PyErr_SetString(PyExc_RuntimeError, "unable to create package object");
+    return NULL;
+  }
+
+  Py_INCREF(db);
+
+  self->db = db;
+  self->c_data = p;
+  self->needs_free = 0;
+  return (PyObject *)self;
+}
+
 #define CHECK_IF_INITIALIZED() if (! self->c_data) { \
   PyErr_SetString(alpm_error, "data is not initialized"); \
   return NULL; \
