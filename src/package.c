@@ -61,6 +61,8 @@ void pyalpm_pkg_unref(PyObject *object) {
 static void pyalpm_package_dealloc(AlpmPackage *self) {
   if (self->needs_free)
     alpm_pkg_free(self->c_data);
+  if (self->db)
+    Py_DECREF(self->db);
   Py_TYPE(self)->tp_free((PyObject*)self);
 }
 
