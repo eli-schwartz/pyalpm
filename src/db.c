@@ -205,7 +205,7 @@ static PyObject* pyalpm_db_search(PyObject *rawself, PyObject *args) {
   if (ok == -1) return NULL;
 
   result = alpm_db_search(self->c_data, rawargs);
-  return alpmlist_to_pylist(result, pyalpm_package_from_pmpkg);
+  return alpmlist_to_pylist2(result, pyalpm_package_from_pmpkg2, self);
 }
 
 static struct PyMethodDef db_methods[] = {
