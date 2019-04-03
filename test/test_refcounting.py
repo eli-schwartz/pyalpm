@@ -25,6 +25,16 @@ def get_syncdb():
     repo.servers = [TEST_MIRROR.format(REPO_1, ARCH)]
     return handle.get_syncdbs()[0]
 
+def get_pkg():
+    syncdb = get_syncdb()
+    syncdb.update(False)
+    return syncdb.get_pkg('pacman')
+
+def get_pkgcache_pkg():
+    syncdb = get_syncdb()
+    syncdb.update(False)
+    return syncdb.pkgcache[0]
+
 def test_refcount_segfault():
     localdb = get_localdb()
     collect()
@@ -40,3 +50,13 @@ def test_register_syncdb_segfault():
     syncdb = register_syncdb()
     collect()
     assert syncdb.search('yay') == []
+
+def test_syncdb_get_pkg():
+    pkg = get_pkg()
+    collect()
+    assert pkg.db is not None
+
+def test_syncdb_pkgcache():
+    pkg = get_pkgcache_pkg()
+    collect()
+    assert pkg.db is not None
