@@ -74,8 +74,8 @@ static PyObject* pyalpm_get_localdb(PyObject *self, PyObject *dummy) {
 
 static PyObject* pyalpm_get_syncdbs(PyObject *self, PyObject *dummy) {
   alpm_handle_t *handle = ALPM_HANDLE(self);
-  return alpmlist_to_pylist(alpm_get_syncdbs(handle),
-			    pyalpm_db_from_pmdb);
+  return alpmlist_to_pylist2(alpm_get_syncdbs(handle),
+			    pyalpm_db_from_pmdb2, self);
 }
 
 static PyObject* pyalpm_register_syncdb(PyObject *self, PyObject *args) {
