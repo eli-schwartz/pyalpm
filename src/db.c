@@ -38,7 +38,7 @@ typedef struct _AlpmDB {
 static PyTypeObject AlpmDBType;
 
 static void pyalpm_db_dealloc(AlpmDB *self) {
-  printf("hello world\n");
+  printf("release db\n");
   Py_TYPE(self)->tp_free((PyObject*)self);
   if (self->handle)
     Py_DECREF(self->handle);
