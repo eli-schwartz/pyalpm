@@ -124,7 +124,7 @@ static int pyalpm_db_set_servers(PyObject* self, PyObject* value, void* closure)
 
 static PyObject* pyalpm_db_get_pkgcache(AlpmDB* self, void* closure) {
   alpm_list_t *pkglist = alpm_db_get_pkgcache(self->c_data);
-  return alpmlist_to_pylist(pkglist, pyalpm_package_from_pmpkg);
+  return alpmlist_to_pylist2(pkglist, pyalpm_package_from_pmpkg2, self);
 }
 
 static PyObject* pyalpm_db_get_grpcache(AlpmDB* self, void* closure) {
