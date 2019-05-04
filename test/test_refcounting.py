@@ -1,6 +1,6 @@
 from gc import collect
 
-from pyalpm import Handle
+from pyalpm import Handle, find_grp_pkgs
 from conftest import TEST_MIRROR, REPO_1, ARCH
 
 
@@ -46,6 +46,15 @@ def get_grpcache_pkg():
     # Returns a tuple
     return syncdb.grpcache[0][1][0]
 
+def get_find_grp_pkgs():
+    handle = Handle('/', '/tmp/')
+    repo = handle.register_syncdb(REPO_1, 0)
+    repo.servers = [TEST_MIRROR.format(REPO_1, ARCH)]
+    db = handle.get_syncdbs()[0]
+    db.update(False)
+    return find_grp_pkgs([db], "base")[0]
+
+
 def test_refcount_segfault():
     localdb = get_localdb()
     collect()
@@ -82,3 +91,9 @@ def test_pkg_search():
     pkg = get_pkg_search()
     collect()
     assert not pkg.db is None
+
+def xtest_find_grp_pkgs():
+    pkg = get_find_grp_pkgs()
+    collect()
+    assert str(pkg)
+    assert pkg.db is not None
