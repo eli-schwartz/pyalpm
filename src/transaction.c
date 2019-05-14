@@ -301,6 +301,9 @@ PyObject* pyalpm_trans_init(PyObject *self, PyObject *args, PyObject *kwargs) {
       RET_ERR("transaction could not be initialized", alpm_errno(handle), NULL);
     }
   }
+
+  Py_INCREF(self);
+
   result = pyalpm_transaction_from_pmhandle(handle);
   return result;
 }
@@ -361,9 +364,12 @@ static PyObject* pyalpm_trans_interrupt(PyObject *self, PyObject *args) {
 }
 
 PyObject* pyalpm_trans_release(PyObject *self, PyObject *args) {
+  printf("release trans\n");
   alpm_handle_t *handle = ALPM_HANDLE(self);
   int ret = alpm_trans_release(handle);
   if (ret == -1) RET_ERR("unable to release transaction", alpm_errno(handle), NULL);
+  printf("decref\n");
+  Py_DECREF(self);
   Py_RETURN_NONE;
 }
 
@@ -446,6 +452,11 @@ static struct PyMethodDef pyalpm_trans_methods[] = {
   { NULL }
 };
 
+static void trans_dealloc(PyObject* self) {
+  printf("release trans dealloc\n");
+  Py_DECREF(self);
+}
+
 /* The Transaction object have the same underlying C structure
  * as the Handle objects. Only the method table changes.
  */
@@ -457,6 +468,7 @@ static PyTypeObject AlpmTransactionType = {
   .tp_doc = "This class is the main interface to get/set libalpm options",
   .tp_methods = pyalpm_trans_methods,
   .tp_getset = pyalpm_trans_getset,
+  .tp_dealloc = (destructor) trans_dealloc,
 };
 
 PyObject *pyalpm_transaction_from_pmhandle(void* data) {
